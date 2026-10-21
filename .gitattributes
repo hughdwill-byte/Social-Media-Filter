@@ -1,0 +1,4 @@
+# Windows launchers need CRLF in checkouts and in GitHub ZIP downloads.
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.psm1 text eol=crlf

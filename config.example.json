@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "written_by_version": "0.1.0-stage1",
+  "updated_utc": "2026-10-21T00:00:00Z",
+  "pc_lan": {
+    "interface_alias": "Wi-Fi",
+    "interface_description": "Example Wi-Fi adapter",
+    "ipv4": "192.168.1.50",
+    "prefix_length": 24,
+    "gateway_ipv4": "192.168.1.1"
+  },
+  "phone_lan": {
+    "ipv4": "192.168.1.60"
+  },
+  "proxy": {
+    "listen_port": 8080,
+    "web_host": "127.0.0.1",
+    "web_port": 8081
+  }
+}

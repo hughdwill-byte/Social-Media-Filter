@@ -1,0 +1,21 @@
+# Runtime data lives in %LOCALAPPDATA%\FeedFilter, never in the repo.
+# These patterns catch accidental local copies.
+config.local.json
+config.local.json.*
+*.private.json
+SHARE_BACK.md
+reports/
+captures/
+mitmproxy/
+.mitmproxy/
+*.pem
+*.p12
+*.pfx
+*.key
+*.cer
+*.crt
+*.har
+*.flow
+*.mitm
+*.conf
+.env

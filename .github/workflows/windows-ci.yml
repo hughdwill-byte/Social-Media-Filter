@@ -1,0 +1,69 @@
+# Optional, bounded check of the Windows launchers on a GitHub-hosted runner.
+# This is WINDOWS_CI evidence only: it never proves the user's PC, LAN or iPhone work.
+# No artifacts are uploaded; the runtime dir is a throwaway temp folder.
+name: windows-launcher-check
+on:
+  push:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    env:
+      FF_NO_PAUSE: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy repo to a path with spaces and parentheses
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force 'C:\ff ci' | Out-Null
+          Copy-Item -Recurse $env:GITHUB_WORKSPACE 'C:\ff ci\Feed Filter (test)'
+      - name: Unit tests on Windows PowerShell 5.1
+        shell: powershell
+        working-directory: C:\ff ci\Feed Filter (test)
+        run: .\tests\run-tests.ps1
+      - name: Unit tests on PowerShell 7
+        shell: pwsh
+        working-directory: C:\ff ci\Feed Filter (test)
+        run: .\tests\run-tests.ps1
+      - name: doctor.cmd without mitmproxy (spaced paths, quoted args)
+        shell: cmd
+        run: call "C:\ff ci\Feed Filter (test)\scripts\doctor.cmd" -RuntimeDir "%RUNNER_TEMP%\ff runtime (x)" -NoOpen
+      - name: configure.cmd list, dry run and save
+        shell: pwsh
+        run: |
+          $cfg = "$env:RUNNER_TEMP\ff runtime (x)"
+          $launcher = 'C:\ff ci\Feed Filter (test)\scripts\configure.cmd'
+          cmd /c "`"$launcher`" -RuntimeDir `"$cfg`" -ListOnly"
+          if ($LASTEXITCODE -ne 0) { throw "ListOnly exit $LASTEXITCODE" }
+          $a = Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -notlike '127.*' -and $_.IPAddress -notlike '169.254.*' } | Select-Object -First 1
+          $alias = $a.InterfaceAlias
+          $parts = $a.IPAddress.Split('.'); $parts[3] = [string](([int]$parts[3] % 250) + 2)
+          $phone = $parts -join '.'
+          cmd /c "`"$launcher`" -RuntimeDir `"$cfg`" -InterfaceAlias `"$alias`" -PhoneIp $phone -AllowVirtual"
+          if ($LASTEXITCODE -ne 0) { throw "dry run exit $LASTEXITCODE" }
+          if (Test-Path "$cfg\config.local.json") { throw 'dry run wrote config' }
+          cmd /c "`"$launcher`" -RuntimeDir `"$cfg`" -InterfaceAlias `"$alias`" -PhoneIp 999.1.1.1 -AllowVirtual -Yes"
+          if ($LASTEXITCODE -ne 3) { throw "invalid phone ip should exit 3, got $LASTEXITCODE" }
+          cmd /c "`"$launcher`" -RuntimeDir `"$cfg`" -InterfaceAlias `"$alias`" -PhoneIp $phone -AllowVirtual -Yes"
+          if ($LASTEXITCODE -ne 0) { throw "save exit $LASTEXITCODE" }
+          $c = Get-Content "$cfg\config.local.json" -Raw | ConvertFrom-Json
+          if ($c.phone_lan.ipv4 -ne $phone) { throw 'phone not saved' }
+      - name: Install mitmproxy via pip (CI only; users install the official Windows package)
+        shell: pwsh
+        run: python -m pip install --quiet mitmproxy
+      - name: doctor.cmd with mitmweb and saved config
+        shell: pwsh
+        run: |
+          $cfg = "$env:RUNNER_TEMP\ff runtime (x)"
+          cmd /c "`"C:\ff ci\Feed Filter (test)\scripts\doctor.cmd`" -RuntimeDir `"$cfg`" -NoOpen"
+          if ($LASTEXITCODE -ne 0) { throw "doctor exit $LASTEXITCODE" }
+          $s = Get-Content "$cfg\reports\SHARE_BACK.md" -Raw
+          $s -split "`n" | Select-String 'TOOLS_MITMWEB|LAN_SELECTION|MITMWEB_|PORT_' | ForEach-Object { $_.Line }
+          if ($s -notmatch 'TOOLS_MITMWEB \| READY') { throw 'mitmweb not READY' }
+          if ($s -notmatch 'LAN_SELECTION \| SELECTED') { throw 'LAN not SELECTED' }
+          foreach ($p in @($env:USERNAME, $env:COMPUTERNAME, $cfg) + @(Get-NetIPAddress -AddressFamily IPv4 | ForEach-Object IPAddress | Where-Object { $_ -notlike '127.*' })) {
+            if ($p -and $s.IndexOf($p, [StringComparison]::OrdinalIgnoreCase) -ge 0) { throw "share-back leaked a private value" }
+          }
