@@ -1,0 +1,9 @@
+date_utc,revision,version,test_id,environment,status,evidence_source,tool_versions,blocker,notes
+2026-10-21,c5f5170,0.1.0-stage1,S1-UNIT,CLOUD_FIXTURE,PASS,agent cloud run of tests/run-tests.ps1,"pwsh 7.4.6 Linux","","60/60 asserts: IPv4/subnet, adapter classes, labels, LAN status, redaction, share-back allowlist + leak guard, config merge/backup"
+2026-10-21,c5f5170,0.1.0-stage1,S1-MITM-HELP-PARSE,CLOUD_FIXTURE,PASS,real mitmweb output captured in cloud,"mitmweb 12.2.3 (pip, Linux)","","--help/--options contain listen-host/listen-port/set/allow-hosts and web_host/web_port/confdir; --help exits 1 so content is used"
+2026-10-21,c5f5170,0.1.0-stage1,S1-DOCTOR-SMOKE,CLOUD_FIXTURE,PASS,agent cloud run of scripts/doctor.ps1,"pwsh 7.4.6 Linux; mitmweb 12.2.3","","Missing Windows cmdlets became FAIL rows; exit 0; SHARE_BACK.md written; TOOLS_MITMWEB READY via real mitmweb. Not a Windows result"
+2026-10-21,c5f5170,0.1.0-stage1,S1-ZIP-LAYOUT,CLOUD_FIXTURE,PASS,git archive of commit extracted to path with spaces,"git","","CRLF in .cmd/.ps1, scripts ASCII-only, revision hint read from commit-ZIP folder name"
+2026-10-21,c5f5170,0.1.0-stage1,S1-WINDOWS-CI,WINDOWS_CI,NOT_RUN,.github/workflows/windows-ci.yml,"","no workflow run observed","See PROJECT_STATE.md for CI outcome"
+2026-10-21,,0.1.0-stage1,S1-USER-DOCTOR,USER_WINDOWS,NOT_RUN,,"",WAITING_FOR_USER_TEST,"NEXT_STEPS steps 4 and 8"
+2026-10-21,,0.1.0-stage1,S1-USER-CONFIGURE,USER_WINDOWS,NOT_RUN,,"",WAITING_FOR_USER_TEST,"NEXT_STEPS step 7"
+2026-10-21,,0.1.0-stage1,GATE-A-SAFARI,USER_IPHONE,NOT_RUN,,"","needs stage 2","Not started"
