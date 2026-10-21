@@ -75,7 +75,7 @@ Invoke-Check 'PYTHON' {
     if (-not $c) { return @('INFO', 'not found (not required)') }
     if ($c.Source -like '*\WindowsApps\*') { return @('INFO', 'Microsoft Store alias only (not required)') }
     $r = Invoke-FFBounded $c.Source '--version' 15
-    @('INFO', ("$($r.StdOut) $($r.StdErr)").Trim() + ' (not required)')
+    @('INFO', (("$($r.StdOut) $($r.StdErr)").Trim() + ' (not required)'))
 }
 
 # mitmweb: presence, version and option compatibility.
@@ -158,7 +158,7 @@ Invoke-Check 'GPU' { @('INFO', ((Get-CimInstance Win32_VideoController | ForEach
 Invoke-Check 'BATTERY' {
     if (@(Get-CimInstance Win32_Battery).Count) { @('INFO', 'battery present (laptop): keep plugged in and awake when filtering') } else { @('INFO', 'no battery') }
 }
-Invoke-Check 'RUNTIME_DIR' { @('INFO', "exists=$(Test-Path -LiteralPath $runtime); mitmproxy confdir exists=$(Test-Path -LiteralPath $confDir)") }
+Invoke-Check 'RUNTIME_DIR' { @('INFO', "existed before this run=$(Test-Path -LiteralPath $runtime); mitmproxy confdir exists=$(Test-Path -LiteralPath $confDir)") }
 Invoke-Check 'CA_PRESENT' {
     # Existence only; certificate/key contents are never read.
     @('INFO', "mitmproxy CA cert file exists=$(Test-Path -LiteralPath (Join-Path $confDir 'mitmproxy-ca-cert.pem'))")

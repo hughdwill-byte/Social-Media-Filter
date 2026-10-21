@@ -27,7 +27,10 @@ interception, endpoint list, adapter or classifier.
 | Fact | Source |
 | --- | --- |
 | iPhone 13, iOS 26.6.1 | User-reported in the guide; not yet observed |
-| Windows version, tools, adapters | Unknown until the doctor's SHARE_BACK.md is returned |
+| Windows 11 Education 25H2 (26200.7984) AMD64, PowerShell 5.1, 16 logical CPUs, 15.5 GB RAM, AMD Radeon integrated GPU, laptop with battery | USER_WINDOWS doctor run 1 (bf6f601) |
+| One home-LAN candidate: Wi-Fi, private 192.168.x.x /24, default route, Windows profile Private; WSL/Hyper-V adapter present | USER_WINDOWS doctor run 1 |
+| mitmproxy not installed at run 1; ports 8080/8081 free | USER_WINDOWS doctor run 1 |
+| Windows Education edition: may be institution-managed; firewall-rule step (stage 2) could be blocked by policy | Inference, not observed |
 | Instagram / TikTok app versions | Unknown |
 
 ## Decisions
