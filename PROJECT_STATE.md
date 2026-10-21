@@ -5,6 +5,7 @@
 - **Workflow state:** WAITING_FOR_USER_TEST (stage 1 doctor/configure results from the user's Windows PC)
 - **Last user-verified gate:** none
 - **Blocker:** user-run stage-1 evidence (see NEXT_STEPS.md)
+- **Windows CI:** run 39551519924 PASS (WINDOWS_CI only; does not prove the user PC). Launcher fix for an inherited PSModulePath followed.
 
 ## Gates (from the build guide)
 
