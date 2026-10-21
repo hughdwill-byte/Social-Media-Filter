@@ -19,7 +19,11 @@
 1. Download the ZIP from the commit link in the agent's reply and save it to `Downloads`.
 2. Right-click the ZIP, then choose **Properties**. If an **Unblock** checkbox appears at the bottom, tick it and click **OK**.
    This affects only this file and stops Windows from blocking the launchers.
-3. Extract it with File Explorer to `Documents\FeedFilter\revisions\test-001`. Open the inner folder that contains
+3. These folders don't exist yet; extracting creates them. Right-click the ZIP and choose **Extract All...**.
+   In the box under "Files will be extracted to this folder", replace the text with
+   `%USERPROFILE%\Documents\FeedFilter\revisions\test-001` and click **Extract**. Windows creates the missing folders.
+   (Any other ordinary folder also works. Use that path wherever these steps say `test-001`.)
+   Open the folder that appears and then the single folder inside it (named `Social-Media-Filter-...`), which contains
    `README.md` and `scripts`. Do not run anything from inside the ZIP.
 4. Double-click `scripts\doctor.cmd`.
    **Expected:** a black window shows `FeedFilter doctor 0.1.0-stage1`, then a summary, and Notepad opens `SHARE_BACK.md`.
